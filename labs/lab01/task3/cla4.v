@@ -34,18 +34,11 @@ module cla4(
 
   wire c1, c2, c3, c4;
 
-  // Intermediate terms for c2
   wire c2_t1, c2_t2;
 
-  // Intermediate terms for c3
   wire c3_t1, c3_t2, c3_t3;
 
-  // Intermediate terms for c4
   wire c4_t1, c4_t2, c4_t3, c4_t4;
-
-  // ------------------------------------------------
-  // Step 1: Generate and Propagate
-  // ------------------------------------------------
 
   xor #(2) (p0, a[0], b[0]);
   xor #(2) (p1, a[1], b[1]);
@@ -57,11 +50,6 @@ module cla4(
   and #(2) (g2, a[2], b[2]);
   and #(2) (g3, a[3], b[3]);
 
-  // ------------------------------------------------
-  // Step 2: Carry equations
-  // ------------------------------------------------
-
-  // c1 = g0 + p0.cin
 
   wire c1_t1;
 
@@ -69,7 +57,6 @@ module cla4(
   or  #(2) (c1, g0, c1_t1);
 
 
-  // c2 = g1 + p1.g0 + p1.p0.cin
 
   and #(2) (c2_t1, p1, g0);
   and #(2) (c2_t2, p1, p0, cin);
@@ -77,17 +64,12 @@ module cla4(
   or #(2) (c2, g1, c2_t1, c2_t2);
 
 
-  // c3 = g2 + p2.g1 + p2.p1.g0 + p2.p1.p0.cin
-
   and #(2) (c3_t1, p2, g1);
   and #(2) (c3_t2, p2, p1, g0);
   and #(2) (c3_t3, p2, p1, p0, cin);
 
   or #(2) (c3, g2, c3_t1, c3_t2, c3_t3);
 
-
-  // c4 = g3 + p3.g2 + p3.p2.g1
-  //          + p3.p2.p1.g0 + p3.p2.p1.p0.cin
 
   and #(2) (c4_t1, p3, g2);
   and #(2) (c4_t2, p3, p2, g1);
@@ -101,13 +83,9 @@ module cla4(
            c4_t3,
            c4_t4);
 
-  // cout = c4
 
   assign #(2) cout = c4;
 
-  // ------------------------------------------------
-  // Step 3: Sum bits
-  // ------------------------------------------------
 
   xor #(2) (sum[0], p0, cin);
   xor #(2) (sum[1], p1, c1);
